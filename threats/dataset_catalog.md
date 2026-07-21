@@ -1,55 +1,31 @@
-# External Dataset Catalog
+# Fixture Catalog
 
-External deepfake detection datasets registered as **probe/evaluation only**.
-They do NOT enter the V5 core training graph.
+This project uses the offline aicomp-sdk fixtures bundled with the competition.
+No additional datasets are required for submission generation or local smoke
+testing.
+
+## Public Fixture Groups
+
+| Group | Examples | Purpose |
+| --- | --- | --- |
+| Web corpus | `page_2`, `page_5`, `page_32`, `chain_attack_1` | Public web content for indirect prompt injection |
+| Mail seed | `email_1`, `email_12`, `email_22` | Local email bodies for untrusted instruction handling |
+| File seed | `readme.txt`, `config.txt`, `secret.txt`, `mh_bridge.txt` | Local sandbox files and protected secret target |
 
 ## Usage Policy
 
-1. **Probe-only:** These datasets are used only for external pressure testing
-   of the forensic pipeline, NOT for training or fine-tuning.
-2. **No label pollution:** External labels never leak into the WeChat path
-   attribution training split.
-3. **Split isolation:** External data is partitioned by source dataset;
-   never mixed with V5's WeChat internal training data.
-4. **Real-fake pairing:** When available, real-fake pairs MUST preserve
-   same-source relationships to prevent shortcut learning.
+1. Probe only the competition fixtures or hidden equivalents exposed by the
+   evaluator environment.
+2. Return only replayable `AttackCandidate.user_messages` chains.
+3. Treat attacker metadata as non-scoring; rely on tool events and official
+   predicates.
+4. Keep URLs non-routable (`.invalid`) and keep payloads limited to benchmark
+   canaries or fixture-local content.
+5. Validate with the official SDK before publishing.
 
-## Registered Datasets
+## Submission Relevance
 
-### DeepfakeBench
-- **Source:** https://github.com/SCLBD/DeepfakeBench
-- **Content:** Unified preprocessing, training configs, frame-level AUC
-- **Protocols:** In-domain, cross-domain evaluation
-- **Use:** External baseline for comparison only
-- **Status:** Not downloaded (reference only)
-
-### DF40 (NeurIPS 2024)
-- **Source:** https://arxiv.org/abs/2406.13495
-- **Content:** 40 forgery techniques
-- **Protocols:** Cross-forgery, cross-domain, unknown forgery/domain, one-vs-all
-- **Key finding:** Complex SOTA methods not significantly better than Xception
-  baseline in new settings
-- **Use:** Baseline reference; confirms need for independent evaluation
-- **Status:** Not downloaded
-
-### Deepfake-Eval-2024
-- **Source:** https://arxiv.org/abs/2503.02857
-- **Content:** 45h video, 56.5h audio, 1,975 images; 88 websites, 52 languages
-- **Key finding:** SOTA AUC drops ~50% (video), ~48% (audio), ~45% (image)
-  vs older benchmarks
-- **Use:** Evidence that academic benchmarks ≠ real-world robustness
-- **Status:** Not downloaded
-
-### GenD
-- **Source:** https://arxiv.org/abs/2508.06248
-- **Content:** Vision encoder fine-tuning (~0.03% params), 32-frame sampling
-- **Performance:** 91.2/91.4/91.6 AUROC (CLIP/PE/DINO variants)
-- **Key finding:** Same-source real-fake pairing reduces shortcut learning
-- **Use:** Architectural reference; validates pairing requirement
-- **Status:** Not downloaded
-
-## Integration Points
-
-- External benchmark results go in `reports/external_benchmarks/`
-- Probe evaluation scripts go in `probes/`
-- No external dataset labels enter `v5_core/training/`
+The standalone `attack_submission.py` probes these fixture families during
+generation, keeps predicate-confirmed chains when available, and returns a small
+bounded backstop set for model or guardrail variants that only materialize during
+fresh replay.

