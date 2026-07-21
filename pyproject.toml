@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "agent-security-redteam"
+version = "0.3.0"
+description = "Agent security red-team harness — aicomp-sdk 3.1.2 compatible"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+dependencies = [
+    "aicomp-sdk>=3.1.2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

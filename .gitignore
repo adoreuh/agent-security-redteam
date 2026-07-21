@@ -1,0 +1,8 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+outputs/
+.aicomp/
+.mypy_cache/
+*.egg-info/
+dist/
