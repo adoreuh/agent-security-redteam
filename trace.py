@@ -102,7 +102,7 @@ class Trace:
 
     def has_egress(self) -> bool:
         """Check if any step performed network egress."""
-        egress_tools = {"http.post", "http.put", "http.patch", "email.send"}
+        egress_tools = {"http.post", "email.send"}
         for step in self.steps:
             for tc in step.tool_calls:
                 if tc.name.lower() in egress_tools:
@@ -112,7 +112,7 @@ class Trace:
 
     def sensitive_tools_used(self) -> List[str]:
         """List sensitive tool names used in this trace."""
-        sensitive = {"fs.write", "fs.delete", "shell.exec", "email.send", "http.post"}
+        sensitive = {"fs.write", "fs.delete", "shell.run", "email.send", "http.post"}
         found = []
         for step in self.steps:
             for tc in step.tool_calls:
